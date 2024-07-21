@@ -1,0 +1,16 @@
+SELECT
+  pi.name AS voucher_no, -- Use a meaningful alias
+  pi.posting_date AS date,
+  pi.supplier_name,
+  pi.currency,
+  pi.conversion_rate,
+  pi.base_grand_totsal AS pi_base_grand_total,  -- Alias for clarity
+  pi.grand_total,
+  SUM(gl.debit) AS total_gl_debit,
+  SUM(gl.credit) AS total_gl_credit,
+  COALESCE(pi.base_grand_total, 0) - COALESCE(SUM(gl.debit), 0) AS base_grand_total_difference
+FROM `tabPurchase Invoice` pi
+LEFT JOIN `tabGL Entry` gl ON pi.name = gl.voucher_no -- Assuming name is linking field
+WHERE pi.docstatus = 1  -- Assuming active invoices
+GROUP BY pi.name, pi.supplier_name, pi.currency, pi.conversion_rate, pi.base_grand_total, pi.grand_total
+HAVING base_grand_total_difference <> 0;
