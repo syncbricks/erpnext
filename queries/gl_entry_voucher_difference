@@ -1,0 +1,8 @@
+SELECT 
+    voucher_no,
+    SUM(debit) AS total_debit,
+    SUM(credit) AS total_credit,
+    SUM(debit - credit) AS difference
+FROM `tabGL Entry`
+GROUP BY voucher_no
+HAVING difference <> 0;
