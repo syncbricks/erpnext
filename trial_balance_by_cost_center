@@ -1,0 +1,31 @@
+-- First create the filters in the query report as below
+-- from_date
+-- to_date
+-- company 
+-- below query script has to be used in ERPNext Report
+
+
+
+SELECT
+  company,
+  account,
+  cost_center,
+  SUM(opening_debit) AS opening_debit,
+  SUM(opening_credit) AS opening_credit,
+  SUM(month_debit) AS month_debit,
+  SUM(month_credit) AS month_credit,
+  SUM(opening_debit + month_debit) AS closing_debit,
+  SUM(opening_credit + month_credit) AS closing_credit
+FROM (
+  SELECT
+    company,
+    account,
+    cost_center,
+    CASE WHEN posting_date < (%(from_date)s) THEN COALESCE(debit, 0) ELSE 0 END AS opening_debit,
+    CASE WHEN posting_date < (%(from_date)s) THEN COALESCE(credit, 0) ELSE 0 END AS opening_credit,
+    CASE WHEN posting_date BETWEEN (%(from_date)s) AND (%(to_date)s) THEN debit ELSE 0 END AS month_debit,
+    CASE WHEN posting_date BETWEEN (%(from_date)s) AND (%(to_date)s) THEN credit ELSE 0 END AS month_credit
+  FROM `tabGL Entry`
+  WHERE company = %(company)s AND is_cancelled=0
+) AS subquery
+GROUP BY company, account, cost_center;
