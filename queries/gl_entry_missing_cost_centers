@@ -1,0 +1,9 @@
+SELECT 
+    voucher_no,
+    SUM(debit) AS total_debit,
+    SUM(credit) AS total_credit,
+    SUM(debit - credit) AS difference
+FROM `tabGL Entry`
+WHERE is_cancelled = 0             -- Exclude cancelled entries
+    AND cost_center IS NULL        -- Filter for entries where cost_center is null
+GROUP BY voucher_no;
