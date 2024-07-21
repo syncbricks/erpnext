@@ -1,0 +1,26 @@
+SELECT
+  je.name,
+  je.posting_date,
+  je.total_debit AS je_total_debit,
+  COALESCE(ge.total_debit, 0) AS gl_total_debit,
+  COALESCE(je.total_debit, 0) - COALESCE(ge.total_debit, 0) AS debit_difference
+FROM `tabJournal Entry` je
+LEFT JOIN (
+  SELECT voucher_no, SUM(debit) AS total_debit
+  FROM `tabGL Entry`
+  GROUP BY voucher_no
+) ge ON je.name = ge.voucher_no
+WHERE je.docstatus = 1
+AND je.posting_date > '2024-05-01'  -- Filter for posting dates after May 1st, 2024
+AND EXISTS (  -- Use EXISTS to check for non-zero difference in subquery
+  SELECT 1
+  FROM `tabGL Entry` gl
+  WHERE gl.voucher_no = je.name  -- Correlate with je.name from main query
+  AND COALESCE(je.total_debit, 0) - (  -- Use je.total_debit from main query
+    SELECT SUM(debit)
+    FROM `tabGL Entry`
+    WHERE voucher_no = gl.voucher_no
+    GROUP BY voucher_no
+  ) <> 0
+)
+ORDER BY je.name;
