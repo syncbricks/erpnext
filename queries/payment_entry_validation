@@ -1,0 +1,24 @@
+SELECT 
+    pe.name AS voucher_no,
+    pe.posting_date as date,
+    pe.payment_type,
+    pe.mode_of_payment,
+    pe.party_type,
+    pe.party_name,
+    pe.received_amount,
+    pe.source_exchange_rate,
+    pe.paid_from_account_currency,
+    pe.target_exchange_rate,
+    paid_to_account_currency,
+    pe.base_received_amount,
+    pe.base_total_taxes_and_charges,
+    pe.base_received_amount + pe.base_total_taxes_and_charges as total_amount,
+    SUM(gl.debit) AS total_gl_debit,
+    SUM(gl.credit) AS total_gl_credit,
+    pe.base_received_amount + pe.base_total_taxes_and_charges - (SUM(gl.debit)) AS difference_total_base_gl
+FROM `tabPayment Entry` pe
+LEFT JOIN `tabGL Entry` gl ON pe.name = gl.voucher_no
+WHERE pe.status = 'submitted' AND is_cancelled=0
+GROUP BY pe.name, pe.payment_type, pe.mode_of_payment, pe.party_type, pe.party_name, pe.paid_to_account_currency,
+         pe.received_amount, pe.source_exchange_rate, pe.base_received_amount, pe.base_total_taxes_and_charges
+HAVING difference_total_base_gl <> 0;
