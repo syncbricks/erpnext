@@ -1,0 +1,15 @@
+SELECT
+    gl_entry.cost_center AS "Cost Center:Link/Cost Center:120",
+    SUM(COALESCE(gl_entry.credit, 0) - COALESCE(gl_entry.debit, 0)) AS "Total Sale:Currency:120"
+FROM
+    `tabGL Entry` AS gl_entry
+JOIN
+    `tabAccount` AS account ON gl_entry.account = account.name
+WHERE
+    gl_entry.is_cancelled = 0
+    AND account.parent_account = 'SL-SALES-INCOME - AATE'
+    AND MONTH(gl_entry.posting_date) = MONTH(CURDATE())
+    AND YEAR(gl_entry.posting_date) = YEAR(CURDATE())
+    AND gl_entry.company = 'Al Ansari Trading Enterprise LLC'
+GROUP BY
+    gl_entry.cost_center;
