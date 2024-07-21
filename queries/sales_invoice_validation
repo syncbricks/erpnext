@@ -1,0 +1,17 @@
+SELECT
+  si.name AS voucher_no, -- Use a meaningful alias
+  si.posting_date AS date,
+  si.customer_name,
+  si.currency,
+  si.conversion_rate,
+  si.base_grand_total AS si_base_grand_total,  -- Alias for clarity
+  si.grand_total,
+  SUM(credit) AS total_gl_credit,  -- Assuming credit column is named 'credit'
+  SUM(gl.debit) AS total_gl_debit,
+  COALESCE(si.base_grand_total, 0) - COALESCE(SUM(credit), 0) AS base_grand_total_difference
+FROM `tabSales Invoice` si
+LEFT JOIN `tabGL Entry` gl ON si.name = gl.voucher_no -- Assuming name is linking field
+WHERE si.docstatus = 1  -- Filter active invoices
+  AND gl.voucher_type='Sales Invoice'  -- Optional filter for GL entry type
+GROUP BY si.name, si.customer_name, si.currency, si.conversion_rate, si.base_grand_total, si.grand_total
+HAVING base_grand_total_difference <> 0;
