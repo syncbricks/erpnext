@@ -1,1 +1,23 @@
-
+SELECT 
+    "OMxxxxxx" as TaxPayerID,
+    pi.company,
+    pi.name as VoucherID,
+    pi.bill_no as TaxInvoiceID,
+    pi.bill_date as InvoiceDate,
+    pi.posting_date as PostingDate,
+    pi.supplier_name,
+    supplier.vat_number,
+    pi.base_total,
+    pi.base_net_total,
+    pi.base_total_taxes_and_charges as TotalCharges,
+    ptc.tax_amount AS VATAmount,
+    pi.grand_total,
+    pi.remarks
+FROM
+    `tabPurchase Invoice` AS pi
+JOIN
+    `tabSupplier` AS supplier ON pi.supplier = supplier.name
+JOIN
+    `tabPurchase Taxes and Charges` AS ptc ON pi.name = ptc.parent
+WHERE
+  pi.docstatus = 1 AND ptc.account_head LIKE '%%VAT%%';
