@@ -1,0 +1,2 @@
+doc = frappe.get_doc("GL Entry","ACC-GLE-2024-00219")
+doc.db_set("cost_center","Head Office (HO) )
