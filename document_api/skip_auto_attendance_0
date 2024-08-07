@@ -1,0 +1,5 @@
+employee_checkin_list = frappe.get_all("Employee Checkin", filters={"skip_auto_attendance": 1, "time": ["between", ["2024-07-03", "2024-07-04"]]})
+
+for i in employee_checkin_list:
+    doc = frappe.get_doc("Employee Checkin", i.name)
+    doc.db_set("skip_auto_attendance", 0)
