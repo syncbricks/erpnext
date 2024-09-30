@@ -1,0 +1,2 @@
+doc = frappe.get_doc("Sales Order","OHSP-24-00069")
+doc.db_set("vertical","SP" )
