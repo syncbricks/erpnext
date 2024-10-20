@@ -1,5 +1,5 @@
 stock_ledger_entries = frappe.get_all("Stock Ledger Entry", filters={"voucher_no": "MIBS-24-00003"}, fields=["name"])
 for sle in stock_ledger_entries:
     sle_doc = frappe.get_doc("Stock Ledger Entry", sle.name)
-        sle_doc.db_set('project', 'PROJ-0480')
+    sle_doc.db_set('project', 'PROJ-0480')
 frappe.db.commit()
