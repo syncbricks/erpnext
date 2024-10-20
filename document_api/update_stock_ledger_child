@@ -1,13 +1,5 @@
-# Query the Stock Ledger Entry records where voucher_no is 'MAT-STE-2024-00034'
-stock_ledger_entries = frappe.get_all("Stock Ledger Entry", filters={"voucher_no": "MAT-STE-2024-00034"}, fields=["name"])
-
-# Loop through each Stock Ledger Entry and update the 'project' field
+stock_ledger_entries = frappe.get_all("Stock Ledger Entry", filters={"voucher_no": "MIBS-24-00003"}, fields=["name"])
 for sle in stock_ledger_entries:
-    # Get the Stock Ledger Entry document
     sle_doc = frappe.get_doc("Stock Ledger Entry", sle.name)
-    
-    # Update the 'project' field (assuming it exists)
-    sle_doc.db_set('project', 'PROJ-2002')  # Replace 'project' with the field you need to update
-
-# Commit the transaction to save changes in the database
+        sle_doc.db_set('project', 'PROJ-0480')
 frappe.db.commit()
