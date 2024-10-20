@@ -1,0 +1,2 @@
+doc = frappe.get_doc("Purchase Order","OPOHHM-24-00072372673")
+doc.db_set("workflow_state","Approved" )
