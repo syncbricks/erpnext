@@ -1,5 +1,6 @@
-gl_entries = frappe.get_all("GL Entry", filters={"voucher_number": "MIBS-24-00003"}, fields=["name"])
+frappe.db.commit()
+gl_entries = frappe.get_all("GL Entry", filters={"voucher_no": "MAT-STE-2024-00034"}, fields=["name"])
 for gl_entry in gl_entries:
     entry_doc = frappe.get_doc("GL Entry", gl_entry.name)
-    entry_doc.db_set('project', 'PROJ-0480')  # Replace 'project' with the field you need to update
+    entry_doc.db_set('project', 'PROJ-2002')  # Replace 'project' with the field you need to update
 frappe.db.commit()
