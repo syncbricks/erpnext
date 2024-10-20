@@ -1,0 +1,27 @@
+# This will update the Project Code in all the Documents related to Material Issue
+# Define the voucher number and project only once
+voucher_no = "MAT-STE-2024-00034"
+project = "PROJ-0025"
+
+# Update the Stock Entry
+doc = frappe.get_doc("Stock Entry", voucher_no)
+doc.db_set("project", project)
+
+# Update the project in Stock Entry Details
+for item in doc.items:
+    item.db_set('project', project)
+frappe.db.commit()
+
+# Update the project in GL Entry
+gl_entries = frappe.get_all("GL Entry", filters={"voucher_no": voucher_no}, fields=["name"])
+for gl_entry in gl_entries:
+    entry_doc = frappe.get_doc("GL Entry", gl_entry.name)
+    entry_doc.db_set('project', project)
+frappe.db.commit()
+
+# Update the project in Stock Ledger Entry
+stock_ledger_entries = frappe.get_all("Stock Ledger Entry", filters={"voucher_no": voucher_no}, fields=["name"])
+for sle in stock_ledger_entries:
+    sle_doc = frappe.get_doc("Stock Ledger Entry", sle.name)
+    sle_doc.db_set('project', project)
+frappe.db.commit()
