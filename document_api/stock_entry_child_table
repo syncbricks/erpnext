@@ -1,0 +1,4 @@
+doc = frappe.get_doc("Stock Entry", "MIBS-24-00003")
+for item in doc.items:
+    item.db_set('project', 'PROJ-0480')
+frappe.db.commit()
